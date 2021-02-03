@@ -1,0 +1,49 @@
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+javafx {
+    version = '14'
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.media']
+}
+
+dependencies {
+    compile "org.openjfx:javafx-base:${javafx.version}:${"win"}"
+    compile "org.openjfx:javafx-controls:${javafx.version}:${"win"}"
+    compile "org.openjfx:javafx-fxml:${javafx.version}:${"win"}"
+    compile "org.openjfx:javafx-graphics:${javafx.version}:${"win"}"
+    compile "org.openjfx:javafx-base:${javafx.version}:${"mac"}"
+    compile "org.openjfx:javafx-controls:${javafx.version}:${"mac"}"
+    compile "org.openjfx:javafx-fxml:${javafx.version}:${"mac"}"
+    compile "org.openjfx:javafx-graphics:${javafx.version}:${"mac"}"
+    compile "org.openjfx:javafx-base:${javafx.version}:${"linux"}"
+    compile "org.openjfx:javafx-controls:${javafx.version}:${"linux"}"
+    compile "org.openjfx:javafx-fxml:${javafx.version}:${"linux"}"
+    compile "org.openjfx:javafx-graphics:${javafx.version}:${"linux"}"
+}
+
+mainClassName = "com.bunca.view.Launcher"
+
+run {
+
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': mainClassName
+        )
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
