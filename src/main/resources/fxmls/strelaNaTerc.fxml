@@ -18,7 +18,7 @@
                   <Image url="@../images/terc.png" />
                </image>
             </ImageView>
-            <Label fx:id="infoLabel" alignment="CENTER" layoutX="182.0" layoutY="545.0" prefHeight="17.0" prefWidth="395.0">
+            <Label fx:id="infoLabel" alignment="CENTER" layoutX="182.0" layoutY="545.0" prefHeight="17.0" prefWidth="395.0" textFill="WHITE">
                <font>
                   <Font size="28.0" />
                </font>

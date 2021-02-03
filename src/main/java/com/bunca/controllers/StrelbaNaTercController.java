@@ -115,7 +115,7 @@ public class StrelbaNaTercController implements Initializable {
         hole.setCenterX(strelaX);
         hole.setCenterY(strelaY);
         playAreaPane.getChildren().add(hole);
-        hole.setFill(Paint.valueOf("gray"));
+        hole.setFill(Paint.valueOf("white"));
         if (distance <= 64) {
             infoLabel.setText("Trafil si zltu.");
             System.out.println("Trafil si zltu.");
