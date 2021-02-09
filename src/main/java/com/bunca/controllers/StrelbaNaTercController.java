@@ -92,8 +92,8 @@ public class StrelbaNaTercController implements Initializable {
         Image crosshairred = new Image(getClass().getResource("/images/crosshairred.png").toString());
         mediaPlayer = new MediaPlayer(new Media(getClass().getResource("/sounds/strela.mp3").toString()));
         System.out.println("[Terc] X:" + (terc.getLayoutX() + terc.getFitWidth() / 2) + " Y: " + (terc.getLayoutY() + terc.getFitHeight() / 2));
-        double tercX = terc.getLayoutX() + (terc.getFitWidth() / 2);
-        double tercY = terc.getLayoutY() + (terc.getFitHeight() / 2);
+        double tercX = terc.getLayoutX() + terc.getFitWidth()/3;
+        double tercY = terc.getLayoutY() + terc.getFitHeight()/2;
 
         playAreaPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -190,24 +190,25 @@ public class StrelbaNaTercController implements Initializable {
         hole.setCenterX(strelaX);
         hole.setCenterY(strelaY);
         playAreaPane.getChildren().add(hole);
-        hole.setFill(Paint.valueOf("white"));
+
+        hole.setFill(Paint.valueOf("gray"));
 
         System.out.println(distance);
 
-        if (distance <= 64) {
-            score += 30;
+        if (distance <= 40) {
+            score += 100;
             infoLabel.setText("Trafil si zltu.");
             System.out.println("Trafil si zltu.");
-        } else if (distance > 64 && distance <= 137.5) {
-            score += 15;
+        } else if (distance > 40 && distance <= 100) {
+            score += 50;
             infoLabel.setText("Trafil si cervenu.");
             System.out.println("Trafil si cervenu.");
-        } else if (distance > 137.5 && distance <= 171) {
-            score += 10;
+        } else if (distance > 100 && distance <= 155) {
+            score += 25;
             infoLabel.setText("Trafil si modru.");
             System.out.println("Trafil si modru.");
-        } else if (distance > 171 && distance <= 217) {
-            score += 8;
+        } else if (distance > 155 && distance <= 200) {
+            score += 10;
             infoLabel.setText("Trafil si ciernu.");
             System.out.println("Trafil si ciernu.");
         } else {
