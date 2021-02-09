@@ -13,7 +13,7 @@
    <children>
       <AnchorPane id="playArea" fx:id="playAreaPane" layoutX="214.0" prefHeight="600.0" prefWidth="786.0">
          <children>
-            <ImageView fx:id="terc" fitHeight="426.0" fitWidth="434.0" layoutX="183.0" layoutY="81.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="terc" fitHeight="396.0" fitWidth="594.0" layoutX="195.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/terc.png" />
                </image>

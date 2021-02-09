@@ -92,8 +92,8 @@ public class StrelbaNaTercController implements Initializable {
         Image crosshairred = new Image(getClass().getResource("/images/crosshairred.png").toString());
         mediaPlayer = new MediaPlayer(new Media(getClass().getResource("/sounds/strela.mp3").toString()));
         System.out.println("[Terc] X:" + (terc.getLayoutX() + terc.getFitWidth() / 2) + " Y: " + (terc.getLayoutY() + terc.getFitHeight() / 2));
-        double tercX = terc.getLayoutX() + terc.getFitWidth() / 2;
-        double tercY = terc.getLayoutY() + terc.getFitHeight() / 2;
+        double tercX = terc.getLayoutX() + (terc.getFitWidth() / 2);
+        double tercY = terc.getLayoutY() + (terc.getFitHeight() / 2);
 
         playAreaPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -191,6 +191,9 @@ public class StrelbaNaTercController implements Initializable {
         hole.setCenterY(strelaY);
         playAreaPane.getChildren().add(hole);
         hole.setFill(Paint.valueOf("white"));
+
+        System.out.println(distance);
+
         if (distance <= 64) {
             score += 30;
             infoLabel.setText("Trafil si zltu.");
