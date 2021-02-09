@@ -13,7 +13,7 @@
    <children>
       <AnchorPane id="playArea" fx:id="playAreaPane" layoutX="214.0" prefHeight="600.0" prefWidth="786.0">
          <children>
-            <ImageView fx:id="terc" fitHeight="426.0" fitWidth="434.0" layoutX="183.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="terc" fitHeight="426.0" fitWidth="434.0" layoutX="183.0" layoutY="81.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/terc.png" />
                </image>
@@ -21,6 +21,21 @@
             <Label fx:id="infoLabel" alignment="CENTER" layoutX="182.0" layoutY="545.0" prefHeight="17.0" prefWidth="395.0" textFill="WHITE">
                <font>
                   <Font size="28.0" />
+               </font>
+            </Label>
+            <Label fx:id="scoreLabel" layoutX="14.0" layoutY="21.0" prefHeight="40.0" prefWidth="227.0" text="Score: 0" textFill="WHITE">
+               <font>
+                  <Font size="28.0" />
+               </font>
+            </Label>
+            <ImageView fx:id="windImage" fitHeight="37.0" fitWidth="200.0" layoutX="377.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/right.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="windLabel" alignment="CENTER" layoutX="342.0" layoutY="42.0" prefHeight="0.0" prefWidth="117.0" text="0" textFill="WHITE">
+               <font>
+                  <Font size="20.0" />
                </font>
             </Label>
          </children>
