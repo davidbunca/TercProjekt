@@ -20,6 +20,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -32,17 +33,16 @@ public class StrelbaNaTercController implements Initializable {
 
     public AnchorPane rootPane, playAreaPane;
     public Button backButton, simButton;
-    public ImageView terc;
+    public ImageView terc, cursor;
     public Label infoLabel, scoreLabel, windLabel;
-    public ImageView windImage;
-    public Slider windSlider;
     public TextField gravityField;
+    public Rectangle lowWind,medWindR,medWindL,highWindR,highWindL;
 
     private int score = 0;
 
     private double windSimValue = 0;
-    private double windStrenght = 1;
     private boolean sim = false;
+    private boolean canShoot = true;
 
     PauseTransition crChange = new PauseTransition(Duration.seconds(1));
     MediaPlayer mediaPlayer;
@@ -51,41 +51,145 @@ public class StrelbaNaTercController implements Initializable {
         @Override
         public void run() {
             Random random = new Random();
-
             while (true) {
-                windStrenght = random.nextInt(2) + 1;
-                if (windSimValue > 0) {
-                    windSimValue += windStrenght * random.nextInt(10) - 6;
-                }
-                if (windSimValue < 0) {
-                    windSimValue += windStrenght * random.nextInt(10) - 4;
-                }
-                if (windSimValue == 0) {
-                    windSimValue += windStrenght * random.nextInt(10) - 5;
-                }
-                if (windSimValue > 100) {
-                    windSimValue = 100;
-                }
-                if (windSimValue < -100) {
-                    windSimValue = -100;
-                }
-                Platform.runLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        showWind(windStrenght, windSimValue);
+                if(sim){
+                    if (windSimValue <= 10 && windSimValue >= -10){
+                        windSimValue += random.nextInt(20)-10;
                     }
-                });
+                    if (windSimValue < 20 && windSimValue > 10){
+                        windSimValue += random.nextInt(20)-10;
+                    }
+                    if (windSimValue >= 20){
+                        windSimValue += random.nextInt(20)-15;
+                    }
+
+                    if (windSimValue > -20 && windSimValue < -10){
+                        windSimValue += random.nextInt(20)-10;
+                    }
+                    if (windSimValue <= -20){
+                        windSimValue += random.nextInt(20)-5;
+                    }
+
+                    Platform.runLater(new Runnable(){
+                        @Override
+                        public void run() {
+                            showWind(windSimValue);
+                        }
+                    });
 
 
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
     };
+    Thread exhaustSimX = new Thread() {
+        @Override
+        public void run() {
+            Random random = new Random();
 
+
+            while (true) {
+                if(sim){
+                    double shake = random.nextInt(100)+1;
+                    if (random.nextBoolean()){
+                        do {
+                            Platform.runLater(new Runnable(){
+                                @Override
+                                public void run() {
+                                    exhaEfectX(0.5);
+                                }
+                            });
+                            shake -= 0.5;
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }while (shake != 0);
+                    }else {
+                        do {
+                            Platform.runLater(new Runnable(){
+                                @Override
+                                public void run() {
+                                    exhaEfectX(-0.5);
+                                }
+                            });
+                            shake -= 0.5;
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }while (shake != 0);
+                    }
+
+                }
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    };
+    Thread exhaustSimY = new Thread() {
+        @Override
+        public void run() {
+            Random random = new Random();
+
+
+            while (true) {
+                if(sim){
+                    double shake = random.nextInt(10)+1;
+                    if (random.nextBoolean()){
+                        do {
+                            Platform.runLater(new Runnable(){
+                                @Override
+                                public void run() {
+                                    exhaEfectY(0.5);
+                                }
+                            });
+                            shake -= 0.5;
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }while (shake != 0);
+                    }else {
+                        do {
+                            Platform.runLater(new Runnable(){
+                                @Override
+                                public void run() {
+                                    exhaEfectY(-0.5);
+                                }
+                            });
+                            shake -= 0.5;
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }while (shake != 0);
+                    }
+
+                }
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    };
+     int ok = 0;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Image crosshairgreen = new Image(getClass().getResource("/images/crosshairgreen.png").toString());
@@ -95,15 +199,22 @@ public class StrelbaNaTercController implements Initializable {
         double tercX = terc.getLayoutX() + terc.getFitWidth()/3;
         double tercY = terc.getLayoutY() + terc.getFitHeight()/2;
 
+
+        exhaustSimX.start();
+        exhaustSimY.start();
+
         playAreaPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 //System.out.println("X: "+event.getX()+" Y: "+event.getY());
+                if (canShoot){
+                canShoot = false;
                 mediaPlayer.seek(Duration.seconds(0));
                 mediaPlayer.play();
-                strela(tercX, tercY, event.getX(), event.getY());
-                playAreaPane.setCursor(new ImageCursor(crosshairred, crosshairred.getWidth() / 2, crosshairred.getHeight() / 2));
+                strela(tercX, tercY, cursor.getLayoutX()+cursor.getFitWidth()/2, cursor.getLayoutY()+cursor.getFitHeight()/2);
+                cursor.setImage(crosshairred);
                 crChange.play();
+                }
             }
         });
 
@@ -113,9 +224,13 @@ public class StrelbaNaTercController implements Initializable {
                 if (sim) {
                     windSimValue = 0;
                     sim = false;
+
                 } else {
-                    windSim.start();
                     sim = true;
+                    windSimValue = 0;
+                    if (ok == 0)windSim.start();
+                    ok = 1;
+
                 }
             }
         });
@@ -133,10 +248,12 @@ public class StrelbaNaTercController implements Initializable {
             }
         });
 
-        playAreaPane.setOnMouseEntered(new EventHandler<MouseEvent>() {
+
+        playAreaPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent event) {
-                playAreaPane.setCursor(new ImageCursor(crosshairgreen, crosshairgreen.getWidth() / 2, crosshairgreen.getHeight() / 2));
+            public void handle(MouseEvent mouseEvent) {
+                cursor.setLayoutX(mouseEvent.getX()-cursor.getFitWidth()/2);
+                cursor.setLayoutY(mouseEvent.getY()-cursor.getFitHeight()/2);
             }
         });
         rootPane.setOnMouseEntered(new EventHandler<MouseEvent>() {
@@ -147,25 +264,75 @@ public class StrelbaNaTercController implements Initializable {
         });
 
         crChange.setOnFinished(event -> {
-            playAreaPane.setCursor(new ImageCursor(crosshairgreen, crosshairgreen.getWidth() / 2, crosshairgreen.getHeight() / 2));
+            cursor.setImage(crosshairgreen);
+            canShoot = true;
         });
+        lowWind.setVisible(false);
+        medWindR.setVisible(false);
+        medWindL.setVisible(false);
+        highWindR.setVisible(false);
+        highWindL.setVisible(false);
+
     }
 
-    public void showWind(double windStrenght, double windValue) {
-        if (windValue < 0) {
-            if (windStrenght == 1){
-                windImage.setImage(new Image(getClass().getResource("/images/leftw.png").toString()));
-            }else windImage.setImage(new Image(getClass().getResource("/images/left.png").toString()));
-            windLabel.setText(String.valueOf(windValue * -1));
-        } else if (windValue == 0) {
-            windImage.setImage(null);
-        } else {
-            if (windStrenght == 1){
-                windImage.setImage(new Image(getClass().getResource("/images/rightw.png").toString()));
-            }else windImage.setImage(new Image(getClass().getResource("/images/right.png").toString()));
-            windLabel.setText(String.valueOf(windValue));
+    public void exhaEfectX(double x){
+        cursor.setLayoutX(cursor.getLayoutX()+x);
+
+    }
+    public void exhaEfectY(double y){
+        cursor.setLayoutY(cursor.getLayoutY()+y);
+    }
+
+
+    public void showWind(double windValue) {
+        if (windValue <= 10 && windValue >= -10){
+            lowWind.setVisible(true);
+
+            medWindR.setVisible(false);
+            highWindR.setVisible(false);
+
+            medWindL.setVisible(false);
+            highWindL.setVisible(false);
+        }
+        if (windValue < 20 && windValue > 10){
+            lowWind.setVisible(true);
+
+            medWindR.setVisible(true);
+            highWindR.setVisible(false);
+
+            medWindL.setVisible(false);
+            highWindL.setVisible(false);
+        }
+        if (windValue >= 20){
+            lowWind.setVisible(true);
+
+            medWindR.setVisible(true);
+            highWindR.setVisible(true);
+
+            medWindL.setVisible(false);
+            highWindL.setVisible(false);
         }
 
+        if (windValue > -20 && windValue < -10){
+            lowWind.setVisible(true);
+
+            medWindR.setVisible(false);
+            highWindR.setVisible(false);
+
+            medWindL.setVisible(true);
+            highWindL.setVisible(false);
+        }
+        if (windValue <= -20){
+            lowWind.setVisible(true);
+
+            medWindR.setVisible(false);
+            highWindR.setVisible(false);
+
+            medWindL.setVisible(true);
+            highWindL.setVisible(true);
+        }
+
+        windLabel.setText(windValue+"");
     }
 
     private void strela(double tercX, double tercY, double strelaX, double strelaY) {
@@ -181,9 +348,10 @@ public class StrelbaNaTercController implements Initializable {
 
         if (sim) {
             strelaX += windSimValue;
+            strelaY += grav;
             System.out.println(windSimValue);
-        } else strelaX += windSlider.getValue();
-        strelaY += grav;
+        }
+
         double distance = Math.sqrt(Math.pow(tercX - strelaX, 2) + Math.pow(tercY - strelaY, 2));
         Circle hole = new Circle();
         hole.setRadius(4);
