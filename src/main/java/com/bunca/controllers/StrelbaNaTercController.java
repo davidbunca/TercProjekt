@@ -36,7 +36,7 @@ public class StrelbaNaTercController implements Initializable {
     public ImageView terc, cursor;
     public Label infoLabel, scoreLabel, windLabel;
     public TextField gravityField;
-    public Rectangle lowWind,medWindR,medWindL,highWindR,highWindL;
+    public Rectangle lowWind, medWindR, medWindL, highWindR, highWindL;
 
     private int score = 0;
 
@@ -52,38 +52,37 @@ public class StrelbaNaTercController implements Initializable {
         public void run() {
             Random random = new Random();
             while (true) {
-                if(sim){
-                    if (windSimValue <= 10 && windSimValue >= -10){
-                        windSimValue += random.nextInt(20)-10;
-                    }
-                    if (windSimValue < 20 && windSimValue > 10){
-                        windSimValue += random.nextInt(20)-10;
-                    }
-                    if (windSimValue >= 20){
-                        windSimValue += random.nextInt(20)-15;
-                    }
-
-                    if (windSimValue > -20 && windSimValue < -10){
-                        windSimValue += random.nextInt(20)-10;
-                    }
-                    if (windSimValue <= -20){
-                        windSimValue += random.nextInt(20)-5;
-                    }
-
-                    Platform.runLater(new Runnable(){
-                        @Override
-                        public void run() {
-                            showWind(windSimValue);
-                        }
-                    });
-
-
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                if (windSimValue <= 10 && windSimValue >= -10) {
+                    windSimValue += random.nextInt(20) - 10;
                 }
+                if (windSimValue < 20 && windSimValue > 10) {
+                    windSimValue += random.nextInt(20) - 10;
+                }
+                if (windSimValue >= 20) {
+                    windSimValue += random.nextInt(20) - 15;
+                }
+
+                if (windSimValue > -20 && windSimValue < -10) {
+                    windSimValue += random.nextInt(20) - 10;
+                }
+                if (windSimValue <= -20) {
+                    windSimValue += random.nextInt(20) - 5;
+                }
+
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        showWind(windSimValue);
+                    }
+                });
+
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
     };
@@ -94,43 +93,18 @@ public class StrelbaNaTercController implements Initializable {
 
 
             while (true) {
-                if(sim){
-                    double shake = random.nextInt(100)+1;
-                    if (random.nextBoolean()){
-                        do {
-                            Platform.runLater(new Runnable(){
-                                @Override
-                                public void run() {
-                                    exhaEfectX(0.5);
-                                }
-                            });
-                            shake -= 0.5;
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }while (shake != 0);
-                    }else {
-                        do {
-                            Platform.runLater(new Runnable(){
-                                @Override
-                                public void run() {
-                                    exhaEfectX(-0.5);
-                                }
-                            });
-                            shake -= 0.5;
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }while (shake != 0);
-                    }
+                if (sim) {
 
+
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            exhaEfectX(random.nextInt(4) - 2);
+                        }
+                    });
                 }
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -145,43 +119,18 @@ public class StrelbaNaTercController implements Initializable {
 
 
             while (true) {
-                if(sim){
-                    double shake = random.nextInt(10)+1;
-                    if (random.nextBoolean()){
-                        do {
-                            Platform.runLater(new Runnable(){
-                                @Override
-                                public void run() {
-                                    exhaEfectY(0.5);
-                                }
-                            });
-                            shake -= 0.5;
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }while (shake != 0);
-                    }else {
-                        do {
-                            Platform.runLater(new Runnable(){
-                                @Override
-                                public void run() {
-                                    exhaEfectY(-0.5);
-                                }
-                            });
-                            shake -= 0.5;
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }while (shake != 0);
-                    }
+                if (sim) {
+
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            exhaEfectY(random.nextInt(3) - 1);
+                        }
+                    });
 
                 }
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -189,15 +138,16 @@ public class StrelbaNaTercController implements Initializable {
             }
         }
     };
-     int ok = 0;
+    int ok = 0;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Image crosshairgreen = new Image(getClass().getResource("/images/crosshairgreen.png").toString());
         Image crosshairred = new Image(getClass().getResource("/images/crosshairred.png").toString());
         mediaPlayer = new MediaPlayer(new Media(getClass().getResource("/sounds/strela.mp3").toString()));
         System.out.println("[Terc] X:" + (terc.getLayoutX() + terc.getFitWidth() / 2) + " Y: " + (terc.getLayoutY() + terc.getFitHeight() / 2));
-        double tercX = terc.getLayoutX() + terc.getFitWidth()/3;
-        double tercY = terc.getLayoutY() + terc.getFitHeight()/2;
+        double tercX = terc.getLayoutX() + terc.getFitWidth() / 3;
+        double tercY = terc.getLayoutY() + terc.getFitHeight() / 2;
 
 
         exhaustSimX.start();
@@ -207,13 +157,13 @@ public class StrelbaNaTercController implements Initializable {
             @Override
             public void handle(MouseEvent event) {
                 //System.out.println("X: "+event.getX()+" Y: "+event.getY());
-                if (canShoot){
-                canShoot = false;
-                mediaPlayer.seek(Duration.seconds(0));
-                mediaPlayer.play();
-                strela(tercX, tercY, cursor.getLayoutX()+cursor.getFitWidth()/2, cursor.getLayoutY()+cursor.getFitHeight()/2);
-                cursor.setImage(crosshairred);
-                crChange.play();
+                if (canShoot) {
+                    canShoot = false;
+                    mediaPlayer.seek(Duration.seconds(0));
+                    mediaPlayer.play();
+                    strela(tercX, tercY, cursor.getLayoutX() + cursor.getFitWidth() / 2, cursor.getLayoutY() + cursor.getFitHeight() / 2);
+                    cursor.setImage(crosshairred);
+                    crChange.play();
                 }
             }
         });
@@ -228,7 +178,7 @@ public class StrelbaNaTercController implements Initializable {
                 } else {
                     sim = true;
                     windSimValue = 0;
-                    if (ok == 0)windSim.start();
+                    if (ok == 0) windSim.start();
                     ok = 1;
 
                 }
@@ -252,8 +202,8 @@ public class StrelbaNaTercController implements Initializable {
         playAreaPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                cursor.setLayoutX(mouseEvent.getX()-cursor.getFitWidth()/2);
-                cursor.setLayoutY(mouseEvent.getY()-cursor.getFitHeight()/2);
+                cursor.setLayoutX(mouseEvent.getX() - cursor.getFitWidth() / 2);
+                cursor.setLayoutY(mouseEvent.getY() - cursor.getFitHeight() / 2);
             }
         });
         rootPane.setOnMouseEntered(new EventHandler<MouseEvent>() {
@@ -275,17 +225,18 @@ public class StrelbaNaTercController implements Initializable {
 
     }
 
-    public void exhaEfectX(double x){
-        cursor.setLayoutX(cursor.getLayoutX()+x);
+    public void exhaEfectX(double x) {
+        cursor.setLayoutX(cursor.getLayoutX() + x);
 
     }
-    public void exhaEfectY(double y){
-        cursor.setLayoutY(cursor.getLayoutY()+y);
+
+    public void exhaEfectY(double y) {
+        cursor.setLayoutY(cursor.getLayoutY() + y);
     }
 
 
     public void showWind(double windValue) {
-        if (windValue <= 10 && windValue >= -10){
+        if (windValue <= 10 && windValue >= -10) {
             lowWind.setVisible(true);
 
             medWindR.setVisible(false);
@@ -294,7 +245,7 @@ public class StrelbaNaTercController implements Initializable {
             medWindL.setVisible(false);
             highWindL.setVisible(false);
         }
-        if (windValue < 20 && windValue > 10){
+        if (windValue < 20 && windValue > 10) {
             lowWind.setVisible(true);
 
             medWindR.setVisible(true);
@@ -303,7 +254,7 @@ public class StrelbaNaTercController implements Initializable {
             medWindL.setVisible(false);
             highWindL.setVisible(false);
         }
-        if (windValue >= 20){
+        if (windValue >= 20) {
             lowWind.setVisible(true);
 
             medWindR.setVisible(true);
@@ -313,7 +264,7 @@ public class StrelbaNaTercController implements Initializable {
             highWindL.setVisible(false);
         }
 
-        if (windValue > -20 && windValue < -10){
+        if (windValue > -20 && windValue < -10) {
             lowWind.setVisible(true);
 
             medWindR.setVisible(false);
@@ -322,7 +273,7 @@ public class StrelbaNaTercController implements Initializable {
             medWindL.setVisible(true);
             highWindL.setVisible(false);
         }
-        if (windValue <= -20){
+        if (windValue <= -20) {
             lowWind.setVisible(true);
 
             medWindR.setVisible(false);
@@ -332,7 +283,7 @@ public class StrelbaNaTercController implements Initializable {
             highWindL.setVisible(true);
         }
 
-        windLabel.setText(windValue+"");
+        windLabel.setText(windValue + "");
     }
 
     private void strela(double tercX, double tercY, double strelaX, double strelaY) {
@@ -357,7 +308,7 @@ public class StrelbaNaTercController implements Initializable {
         hole.setRadius(4);
         hole.setCenterX(strelaX);
         hole.setCenterY(strelaY);
-        playAreaPane.getChildren().add(hole);
+        playAreaPane.getChildren().add(playAreaPane.getChildren().indexOf(cursor) - 1, hole);
 
         hole.setFill(Paint.valueOf("gray"));
 
