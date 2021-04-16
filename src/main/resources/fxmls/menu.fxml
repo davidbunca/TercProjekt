@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="menuBack" fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bunca.controllers.MenuController">
    <children>
-      <Label fx:id="lukostrelbaLabel" alignment="CENTER" layoutX="94.0" layoutY="168.0" prefHeight="132.0" prefWidth="812.0" text="StrelbaNaTerc" textAlignment="CENTER">
+      <Label fx:id="lukostrelbaLabel" alignment="CENTER" layoutX="94.0" layoutY="162.0" prefHeight="132.0" prefWidth="812.0" text="StrelbaNaTerc" textAlignment="CENTER">
          <font>
             <Font size="49.0" />
          </font>
       </Label>
+      <TableView fx:id="table" layoutX="337.0" layoutY="300.0" prefHeight="283.0" prefWidth="327.0">
+        <columns>
+          <TableColumn fx:id="nameC" prefWidth="107.0" text="Meno" />
+          <TableColumn fx:id="scoreC" prefWidth="71.0" text="Skore" />
+            <TableColumn fx:id="ammoC" prefWidth="67.0" text="Naboje" />
+            <TableColumn fx:id="coC" prefWidth="78.0" text="Koeficient" />
+        </columns>
+      </TableView>
    </children>
 </AnchorPane>

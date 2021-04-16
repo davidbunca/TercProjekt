@@ -1,5 +1,6 @@
 package com.bunca.controllers;
 
+import com.bunca.Record;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -26,6 +27,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
@@ -34,23 +37,30 @@ import java.util.ResourceBundle;
 public class StrelbaNaTercController implements Initializable {
 
 
-    public AnchorPane rootPane, playAreaPane,widgets;
-    public Button backButton, simButton;
+    public AnchorPane rootPane, playAreaPane, widgets;
+    public Button backButton, simButton, playTournament, save;
     public ImageView terc, cursor;
     public Label infoLabel, scoreLabel, windLabel;
-    public TextField gravityField;
+    public TextField gravityField, ammoField, usernameField;
     public Rectangle lowWind, medWindR, medWindL, highWindR, highWindL;
     public Slider shootingSlider;
+    public Group saveRecordGroup;
+
 
     private int score = 0;
     private double windSimValue = 0;
     private boolean sim = false;
     private boolean canShoot = true;
+    private boolean tournamet = false;
     private int exhRange1 = 4;
     private int exhRange2 = 2;
 
+    private int ammo = 10;
+
     PauseTransition crChange = new PauseTransition(Duration.seconds(1));
     MediaPlayer mediaPlayer;
+
+    Record record = new Record();
 
     Thread windSim = new Thread() {
         @Override
@@ -81,7 +91,6 @@ public class StrelbaNaTercController implements Initializable {
                     }
                 });
 
-
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -96,11 +105,8 @@ public class StrelbaNaTercController implements Initializable {
         public void run() {
             Random random = new Random();
 
-
             while (true) {
                 if (sim) {
-
-
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
@@ -143,7 +149,6 @@ public class StrelbaNaTercController implements Initializable {
             }
         }
     };
-    int ok = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -157,6 +162,7 @@ public class StrelbaNaTercController implements Initializable {
 
         exhaustSimX.start();
         exhaustSimY.start();
+        windSim.start();
 
         playAreaPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -176,16 +182,12 @@ public class StrelbaNaTercController implements Initializable {
         simButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if (sim) {
+                if (sim && tournamet == false) {
                     windSimValue = 0;
                     sim = false;
-
                 } else {
                     sim = true;
                     windSimValue = 0;
-                    if (ok == 0) windSim.start();
-                    ok = 1;
-
                 }
             }
         });
@@ -211,6 +213,13 @@ public class StrelbaNaTercController implements Initializable {
                 cursor.setLayoutY(mouseEvent.getY() - cursor.getFitHeight() / 2);
             }
         });
+        playAreaPane.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                cursor.setLayoutX(mouseEvent.getX() - cursor.getFitWidth() / 2);
+                cursor.setLayoutY(mouseEvent.getY() - cursor.getFitHeight() / 2);
+            }
+        });
 
         widgets.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
@@ -230,17 +239,66 @@ public class StrelbaNaTercController implements Initializable {
         shootingSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if (newValue.intValue() == 0){
+                if (newValue.intValue() == 0) {
                     exhRange1 = 4;
                     exhRange2 = 2;
                 }
-                if (newValue.intValue() == 1){
+                if (newValue.intValue() == 1) {
                     exhRange1 = 10;
                     exhRange2 = 5;
                 }
             }
         });
 
+
+        playTournament.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                sim = true;
+                try {
+                    ammo = Integer.parseInt(ammoField.getText());
+                    if (ammo <= 0) {
+                        ammo = 10;
+                    }
+                } catch (Exception e) {
+                    ammo = 10;
+                }
+                int stance = (int) shootingSlider.getValue();
+                tournamet = true;
+                score = 0;
+
+                record.setAmmo(ammo);
+                record.setStance(stance);
+
+                scoreLabel.setText("Score: " + score);
+                ammoField.setText(ammo + "");
+
+                gravityField.setDisable(true);
+                shootingSlider.setDisable(true);
+                ammoField.setEditable(false);
+                playTournament.setVisible(false);
+                simButton.setVisible(false);
+            }
+        });
+
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (usernameField.getText().equals("")) {
+                    record.setUsername("User");
+                } else {
+                    record.setUsername(usernameField.getText());
+                }
+                gravityField.setDisable(false);
+                saveRecordGroup.setVisible(false);
+                shootingSlider.setDisable(false);
+                playTournament.setVisible(true);
+                simButton.setVisible(true);
+                saveRecord(record);
+                record = new Record();
+
+            }
+        });
 
 
         crChange.setOnFinished(event -> {
@@ -317,6 +375,7 @@ public class StrelbaNaTercController implements Initializable {
         windLabel.setText(windValue + "");
     }
 
+
     private void strela(double tercX, double tercY, double strelaX, double strelaY) {
         double grav = 9.81;
         if (!gravityField.equals("")) {
@@ -366,5 +425,26 @@ public class StrelbaNaTercController implements Initializable {
             System.out.println("Netrafil si terc.");
         }
         scoreLabel.setText("Score: " + score);
+
+        if (tournamet) {
+            if (ammo > 0) ammo--;
+            if (ammo == 0) {
+                tournamet = false;
+                saveRecordGroup.setVisible(true);
+            }
+            ammoField.setText(ammo + "");
+            record.setScore(score);
+        }
+    }
+
+    public void saveRecord(Record record){
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("records.txt",true));
+            writer.append("\n"+record.getUsername()+";-;"+record.getScore()+";-;"+record.getAmmo()+";-;"+record.getStance()+";-;"+record.getCoeficient());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
