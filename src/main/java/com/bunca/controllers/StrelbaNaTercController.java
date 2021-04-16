@@ -62,6 +62,7 @@ public class StrelbaNaTercController implements Initializable {
 
     Record record = new Record();
 
+    //simulacia vetra
     Thread windSim = new Thread() {
         @Override
         public void run() {
@@ -100,6 +101,7 @@ public class StrelbaNaTercController implements Initializable {
             }
         }
     };
+    //simulacia vycerpania na os X
     Thread exhaustSimX = new Thread() {
         @Override
         public void run() {
@@ -123,6 +125,8 @@ public class StrelbaNaTercController implements Initializable {
             }
         }
     };
+
+    //simulacia vycerpania na os Y
     Thread exhaustSimY = new Thread() {
         @Override
         public void run() {
@@ -164,6 +168,7 @@ public class StrelbaNaTercController implements Initializable {
         exhaustSimY.start();
         windSim.start();
 
+        //void, ovlada strielanie
         playAreaPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -179,6 +184,7 @@ public class StrelbaNaTercController implements Initializable {
             }
         });
 
+        //void, ovlada spustenie simulacie
         simButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -192,6 +198,7 @@ public class StrelbaNaTercController implements Initializable {
             }
         });
 
+        //void, ovlada tlacidlo na vratenie sa do menu
         backButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -206,6 +213,7 @@ public class StrelbaNaTercController implements Initializable {
         });
 
 
+        //void, synchronizuje pohyb myši a mireidla
         playAreaPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -221,6 +229,7 @@ public class StrelbaNaTercController implements Initializable {
             }
         });
 
+        //void, zapina kurzor a vypina mieridla
         widgets.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -236,6 +245,7 @@ public class StrelbaNaTercController implements Initializable {
             }
         });
 
+        //void, ovlada silu trasenia ruky
         shootingSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -250,7 +260,7 @@ public class StrelbaNaTercController implements Initializable {
             }
         });
 
-
+        //void, zapina hru pre umiestenie sa do tabulky
         playTournament.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -281,6 +291,7 @@ public class StrelbaNaTercController implements Initializable {
             }
         });
 
+        //void, uklada strelbu do rebricka
         save.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -314,16 +325,17 @@ public class StrelbaNaTercController implements Initializable {
 
     }
 
+    //voidy, nastavuju mieridla os X a Y
     public void exhaEfectX(double x) {
         cursor.setLayoutX(cursor.getLayoutX() + x);
 
     }
-
     public void exhaEfectY(double y) {
         cursor.setLayoutY(cursor.getLayoutY() + y);
     }
 
 
+    //void, zobrazuje silu a smer vetra
     public void showWind(double windValue) {
         if (windValue <= 10 && windValue >= -10) {
             lowWind.setVisible(true);
@@ -376,6 +388,7 @@ public class StrelbaNaTercController implements Initializable {
     }
 
 
+    //void, znaci bod dopadu gulky a pocita body
     private void strela(double tercX, double tercY, double strelaX, double strelaY) {
         double grav = 9.81;
         if (!gravityField.equals("")) {
@@ -437,6 +450,7 @@ public class StrelbaNaTercController implements Initializable {
         }
     }
 
+    //void, uklada rebricek do suboru
     public void saveRecord(Record record){
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("records.txt",true));
