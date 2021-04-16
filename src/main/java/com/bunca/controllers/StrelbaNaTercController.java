@@ -213,6 +213,20 @@ public class StrelbaNaTercController implements Initializable {
             }
         });
 
+        playAreaPane.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                cursor.setVisible(true);
+            }
+        });
+
+        playAreaPane.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                cursor.setVisible(false);
+            }
+        });
+
         crChange.setOnFinished(event -> {
             cursor.setImage(crosshairgreen);
             canShoot = true;
