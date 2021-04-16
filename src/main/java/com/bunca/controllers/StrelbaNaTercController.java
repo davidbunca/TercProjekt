@@ -2,11 +2,14 @@ package com.bunca.controllers;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
 import javafx.scene.ImageCursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,18 +34,20 @@ import java.util.ResourceBundle;
 public class StrelbaNaTercController implements Initializable {
 
 
-    public AnchorPane rootPane, playAreaPane;
+    public AnchorPane rootPane, playAreaPane,widgets;
     public Button backButton, simButton;
     public ImageView terc, cursor;
     public Label infoLabel, scoreLabel, windLabel;
     public TextField gravityField;
     public Rectangle lowWind, medWindR, medWindL, highWindR, highWindL;
+    public Slider shootingSlider;
 
     private int score = 0;
-
     private double windSimValue = 0;
     private boolean sim = false;
     private boolean canShoot = true;
+    private int exhRange1 = 4;
+    private int exhRange2 = 2;
 
     PauseTransition crChange = new PauseTransition(Duration.seconds(1));
     MediaPlayer mediaPlayer;
@@ -99,7 +104,7 @@ public class StrelbaNaTercController implements Initializable {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            exhaEfectX(random.nextInt(4) - 2);
+                            exhaEfectX(random.nextInt(exhRange1) - exhRange2);
                         }
                     });
                 }
@@ -124,7 +129,7 @@ public class StrelbaNaTercController implements Initializable {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            exhaEfectY(random.nextInt(3) - 1);
+                            exhaEfectY(random.nextInt(exhRange1) - exhRange2);
                         }
                     });
 
@@ -206,10 +211,12 @@ public class StrelbaNaTercController implements Initializable {
                 cursor.setLayoutY(mouseEvent.getY() - cursor.getFitHeight() / 2);
             }
         });
-        rootPane.setOnMouseEntered(new EventHandler<MouseEvent>() {
+
+        widgets.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 rootPane.setCursor(Cursor.DEFAULT);
+                cursor.setVisible(false);
             }
         });
 
@@ -220,17 +227,27 @@ public class StrelbaNaTercController implements Initializable {
             }
         });
 
-        playAreaPane.setOnMouseExited(new EventHandler<MouseEvent>() {
+        shootingSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
-            public void handle(MouseEvent mouseEvent) {
-                cursor.setVisible(false);
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if (newValue.intValue() == 0){
+                    exhRange1 = 4;
+                    exhRange2 = 2;
+                }
+                if (newValue.intValue() == 1){
+                    exhRange1 = 10;
+                    exhRange2 = 5;
+                }
             }
         });
+
+
 
         crChange.setOnFinished(event -> {
             cursor.setImage(crosshairgreen);
             canShoot = true;
         });
+
         lowWind.setVisible(false);
         medWindR.setVisible(false);
         medWindL.setVisible(false);
